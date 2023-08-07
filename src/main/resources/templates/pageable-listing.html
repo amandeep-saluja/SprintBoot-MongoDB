@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Listings Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .listing {
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin: 10px;
+            display: flex;
+            flex-direction: column;
+        }
+        .image {
+            flex: 1;
+            padding: 10px;
+        }
+        .image img {
+            max-width: 250px;
+            height: auto;
+        }
+        .details {
+            flex: 2;
+            padding: 10px;
+        }
+        .details h2 {
+            margin-top: 0;
+        }
+        .details p {
+            margin: 0;
+            padding: 5px 0;
+        }
+        .pagination {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-content: center;
+            flex-wrap: wrap;
+        }
+        .pagination > li {
+            margin: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <div th:switch="${listings}">
+        <h2 th:case="null">No issues yet!</h2>
+        <div th:case="*" class="listing">
+            <h1>Listings</h1>
+<!--            <div class="image">-->
+<!--                <img src="https://a0.muscache.com/im/pictures/e83e702f-ef49-40fb-8fa0-6512d7e26e9b.jpg?aki_policy=large" alt="Listing Image">-->
+<!--            </div>-->
+
+            <table border="1" class="details">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>URL</th>
+                        <th>Image</th>
+                        <th>Price</th>
+                        <th>Accommodates</th>
+                        <th>Bedrooms</th>
+                        <th>Beds</th>
+                        <th>Number of Reviews</th>
+                        <th>Edit</th>
+                        <th>Delete</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="listing : ${listings}">
+                        <td th:text="${listing._id}"></td>
+                        <td><a th:href="${listing.getListing_url()}" th:target="_blank" th:text="${listing.getName()}"></a></td>
+                        <td class="image"><img th:src="${listing.getImages().getPicture_url()}" /></td>
+                        <td th:text="${listing.price}"></td>
+                        <td th:text="${listing.accommodates}"></td>
+                        <td th:text="${listing.bedrooms}"></td>
+                        <td th:text="${listing.beds}"></td>
+                        <td th:text="${listing.number_of_reviews}"></td>
+                        <td><a th:href="@{/edit/{id}(id=${listing.get_id()})}">Edit</a></td>
+                        <td>
+                            <form action="/delete" method="post">
+                                <input type="hidden" name="_id" th:value="${listing._id}">
+                                <button type="submit" onclick="return confirm('Are you sure you want to delete this listing?')">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <a href="/add">Add New Listing</a>
+
+            <div>
+                <ul class="pagination">
+                    <li th:unless="${currentPage == 0}">
+                        <a th:href="@{/pageable-listings(page=0)}">First</a>
+                    </li>
+                    <li th:unless="${currentPage == 0}">
+                        <a th:href="@{/pageable-listings(page=${currentPage - 1})}">Previous</a>
+                    </li>
+                    <li th:each="page : ${#numbers.sequence(0, totalPages - 1)}">
+                        <a th:href="@{/pageable-listings(page=${page})}" th:text="${page} + 1"></a>
+                    </li>
+                    <li th:unless="${currentPage == totalPages - 1}">
+                        <a th:href="@{/pageable-listings(page=${currentPage + 1})}">Next</a>
+                    </li>
+                    <li th:unless="${currentPage == totalPages - 1}">
+                        <a th:href="@{/pageable-listings(page=${totalPages - 1})}">Last</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
