@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>Listings Page</title>
+</head>
+
+<body>
+    <div th:switch="${listings}">
+        <h2 th:case="null">No issues yet!</h2>
+        <div th:case="*">
+        <h1>Listings</h1>
+
+        <table border="1">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Price</th>
+                <th>Accommodates</th>
+                <th>Bedrooms</th>
+                <th>Beds</th>
+                <th>Number of Reviews</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="listing : ${listings}">
+                <td th:text="${listing._id}"></td>
+                <td th:text="${listing.name}"></td>
+                <td th:text="${listing.price}"></td>
+                <td th:text="${listing.accommodates}"></td>
+                <td th:text="${listing.bedrooms}"></td>
+                <td th:text="${listing.beds}"></td>
+                <td th:text="${listing.number_of_reviews}"></td>
+            </tr>
+            </tbody>
+        </table>
+        </div>
+        <p><a href="/signup">Add a new issue</a></p>
+    </div>
+</body>
+
+</html>
